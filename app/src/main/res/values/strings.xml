@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Smart AgricDiagnostics</string>
+    <string name="select_crop">Select a Crop to Diagnose</string>
+    <string name="maize">Maize</string>
+    <string name="cassava">Cassava</string>
+    <string name="beans">Beans</string>
+    <string name="diagnose">Diagnose Disease</string>
+    <string name="analyzing">Analyzing leaf…</string>
+    <string name="healthy">HEALTHY</string>
+    <string name="disease_detected">DISEASE DETECTED</string>
+    <string name="treatment">Treatment Recommendation</string>
+    <string name="save_history">Save to History</string>
+    <string name="scan_again">Scan Again</string>
+    <string name="history">Diagnosis History</string>
+    <string name="no_history">No diagnoses yet.\nScan a crop to get started!</string>
+    <string name="confidence">Confidence</string>
+    <string name="demo_mode">DEMO MODE — Awaiting Real Model</string>
+    <string name="camera_tip">Point camera at the LEAF of the plant</string>
+    <string name="saved_ok">Diagnosis saved to history!</string>
+    <string name="permission_denied">Camera permission denied</string>
+    <string name="app_tagline">Offline AI Crop Disease Detection</string>
+    <string name="powered_by">Powered by TensorFlow Lite · MobileNetV2</string>
+    <string name="version">v1.0 — Tororo District, Uganda</string>
+    <string name="maize_zea">Zea mays</string>
+    <string name="cassava_manihot">Manihot esculenta</string>
+    <string name="beans_phaseolus">Phaseolus vulgaris</string>
+</resources>

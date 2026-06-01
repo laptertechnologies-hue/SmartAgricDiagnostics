@@ -1,0 +1,12 @@
+Maize_Healthy
+Maize_Lethal_Necrosis
+Maize_Streak_Virus
+Maize_Northern_Leaf_Blight
+Cassava_Healthy
+Cassava_Mosaic_Disease
+Cassava_Brown_Streak_Disease
+Cassava_Bacterial_Blight
+Beans_Healthy
+Beans_Rust
+Beans_Angular_Leaf_Spot
+Beans_Common_Bacterial_Blight
