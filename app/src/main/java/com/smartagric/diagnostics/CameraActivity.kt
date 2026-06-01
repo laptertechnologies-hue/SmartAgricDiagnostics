@@ -88,21 +88,29 @@ class CameraActivity : AppCompatActivity() {
                 val bitmap = imageProxyToBitmap(image)
                 image.close()
 
-                val result = classifier.classify(bitmap, cropType)
+                try {
+                    val result = classifier.classify(bitmap, cropType)
+                    runOnUiThread {
+                        analyzingText.visibility = View.GONE
+                        captureBtn.isEnabled = true
+                        captureBtn.text = "🔬  DIAGNOSE DISEASE"
 
-                runOnUiThread {
-                    analyzingText.visibility = View.GONE
-                    captureBtn.isEnabled = true
-                    captureBtn.text = "🔬  DIAGNOSE DISEASE"
-
-                    val intent = Intent(this@CameraActivity, ResultActivity::class.java).apply {
-                        putExtra(MainActivity.EXTRA_CROP, cropType)
-                        putExtra(EXTRA_DISEASE, result.disease)
-                        putExtra(EXTRA_CONFIDENCE, result.confidence)
-                        putExtra(EXTRA_TREATMENT, result.treatment)
-                        putExtra(EXTRA_IS_DEMO, result.isDemoMode)
+                        val intent = Intent(this@CameraActivity, ResultActivity::class.java).apply {
+                            putExtra(MainActivity.EXTRA_CROP, cropType)
+                            putExtra(EXTRA_DISEASE, result.disease)
+                            putExtra(EXTRA_CONFIDENCE, result.confidence)
+                            putExtra(EXTRA_TREATMENT, result.treatment)
+                            putExtra(EXTRA_IS_DEMO, result.isDemoMode)
+                        }
+                        startActivity(intent)
                     }
-                    startActivity(intent)
+                } catch (e: Exception) {
+                    runOnUiThread {
+                        analyzingText.visibility = View.GONE
+                        captureBtn.isEnabled = true
+                        captureBtn.text = "🔬  DIAGNOSE DISEASE"
+                        Toast.makeText(this@CameraActivity, "Model missing! Please add crop_disease_model.tflite to assets.", Toast.LENGTH_LONG).show()
+                    }
                 }
             }
 

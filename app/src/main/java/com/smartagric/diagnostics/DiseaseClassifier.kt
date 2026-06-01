@@ -11,14 +11,13 @@ data class DiagnosisResult(
     val disease: String,
     val confidence: Float,
     val treatment: String,
-    val isDemoMode: Boolean
+    val isDemoMode: Boolean = false // Kept for DB compatibility, but always false now
 )
 
 class DiseaseClassifier(private val context: Context) {
 
     private var interpreter: Interpreter? = null
     private var labels: List<String> = emptyList()
-    private var isDemoMode = false
 
     private val IMAGE_SIZE = 224
 
@@ -125,28 +124,6 @@ class DiseaseClassifier(private val context: Context) {
             "• Disinfect farm tools after use in infected areas"
     )
 
-    // Realistic demo results per crop type for DEMO MODE
-    private val DEMO_RESULTS = mapOf(
-        "Maize" to listOf(
-            Triple("Maize_Lethal_Necrosis", 0.87f, false),
-            Triple("Maize_Streak_Virus", 0.79f, false),
-            Triple("Maize_Northern_Leaf_Blight", 0.91f, false),
-            Triple("Maize_Healthy", 0.95f, true)
-        ),
-        "Cassava" to listOf(
-            Triple("Cassava_Mosaic_Disease", 0.93f, false),
-            Triple("Cassava_Brown_Streak_Disease", 0.82f, false),
-            Triple("Cassava_Bacterial_Blight", 0.76f, false),
-            Triple("Cassava_Healthy", 0.88f, true)
-        ),
-        "Beans" to listOf(
-            Triple("Beans_Rust", 0.84f, false),
-            Triple("Beans_Angular_Leaf_Spot", 0.78f, false),
-            Triple("Beans_Common_Bacterial_Blight", 0.89f, false),
-            Triple("Beans_Healthy", 0.92f, true)
-        )
-    )
-
     init {
         loadModel()
     }
@@ -157,24 +134,21 @@ class DiseaseClassifier(private val context: Context) {
             val options = Interpreter.Options().apply { numThreads = 4 }
             interpreter = Interpreter(model, options)
             labels = FileUtil.loadLabels(context, "labels.txt")
-            isDemoMode = false
             AppLogger.log(context, "MODEL", "TFLite model loaded successfully. ${labels.size} classes.")
         } catch (e: Exception) {
-            // Model not yet trained — fall back to Demo Mode
-            isDemoMode = true
-            labels = FileUtil.loadLabels(context, "labels.txt")
-            AppLogger.log(context, "MODEL", "TFLite model not found — DEMO MODE active. Error: ${e.message}")
+            AppLogger.log(context, "MODEL", "CRITICAL ERROR: TFLite model not found. Error: ${e.message}")
+            interpreter = null // Explicitly null to handle gracefully
         }
     }
 
     fun classify(bitmap: Bitmap, cropType: String): DiagnosisResult {
-        AppLogger.log(context, "CLASSIFY", "Starting classification for crop: $cropType | DemoMode=$isDemoMode")
+        AppLogger.log(context, "CLASSIFY", "Starting classification for crop: $cropType")
 
-        if (isDemoMode || interpreter == null) {
-            return getDemoResult(cropType)
+        if (interpreter == null) {
+            throw IllegalStateException("Model 'crop_disease_model.tflite' not found in assets.")
         }
 
-        return try {
+        try {
             val scaled = Bitmap.createScaledBitmap(bitmap, IMAGE_SIZE, IMAGE_SIZE, true)
             val buffer = preprocessBitmap(scaled)
             val output = Array(1) { FloatArray(labels.size) }
@@ -188,23 +162,11 @@ class DiseaseClassifier(private val context: Context) {
                 ?: "Consult your local agricultural extension officer for advice."
 
             AppLogger.log(context, "RESULT", "Disease=$disease | Confidence=${(maxConf*100).toInt()}%")
-            DiagnosisResult(disease, maxConf, treatment, false)
+            return DiagnosisResult(disease, maxConf, treatment, false)
         } catch (e: Exception) {
-            AppLogger.log(context, "ERROR", "Inference failed: ${e.message}. Falling back to demo.")
-            getDemoResult(cropType)
+            AppLogger.log(context, "ERROR", "Inference failed: ${e.message}")
+            throw e
         }
-    }
-
-    private fun getDemoResult(cropType: String): DiagnosisResult {
-        val options = DEMO_RESULTS[cropType] ?: DEMO_RESULTS["Maize"]!!
-        // Simulate inference by picking a weighted-random result
-        val pick = options[(System.currentTimeMillis() % options.size).toInt()]
-        val disease   = pick.first
-        val confidence = pick.second
-        val treatment = TREATMENTS[disease]
-            ?: "Consult your local agricultural extension officer for advice."
-        AppLogger.log(context, "DEMO", "Returning demo result: $disease (${(confidence*100).toInt()}%)")
-        return DiagnosisResult(disease, confidence, treatment, isDemoMode = true)
     }
 
     private fun preprocessBitmap(bitmap: Bitmap): ByteBuffer {
