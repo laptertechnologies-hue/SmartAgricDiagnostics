@@ -46,53 +46,62 @@ print("\n--- DOWNLOADING AND MAPPING DATASETS ---")
 
 # 1. BEANS DATASET (via TFDS)
 print("Processing Beans dataset...")
-beans_ds, beans_info = tfds.load('beans', split='train+validation+test', with_info=True)
-beans_names = beans_info.features['label'].names
-# Beans classes: 'angular_leaf_spot', 'bean_rust', 'healthy'
-beans_mapping = {
-    'healthy': 'Beans_Healthy',
-    'bean_rust': 'Beans_Rust',
-    'angular_leaf_spot': 'Beans_Angular_Leaf_Spot'
-}
-for i, ex in enumerate(tfds.as_numpy(beans_ds)):
-    cls_name = beans_names[ex['label']]
-    target = beans_mapping.get(cls_name)
-    if target:
-        tf.keras.utils.save_img(os.path.join(DATA_DIR, target, f"bean_{i}.jpg"), ex['image'])
+try:
+    beans_ds, beans_info = tfds.load('beans', split='train+validation+test', with_info=True)
+    beans_names = beans_info.features['label'].names
+    # Beans classes: 'angular_leaf_spot', 'bean_rust', 'healthy'
+    beans_mapping = {
+        'healthy': 'Beans_Healthy',
+        'bean_rust': 'Beans_Rust',
+        'angular_leaf_spot': 'Beans_Angular_Leaf_Spot'
+    }
+    for i, ex in enumerate(tfds.as_numpy(beans_ds)):
+        cls_name = beans_names[ex['label']]
+        target = beans_mapping.get(cls_name)
+        if target:
+            tf.keras.utils.save_img(os.path.join(DATA_DIR, target, f"bean_{i}.jpg"), ex['image'])
+except Exception as e:
+    print(f"Failed to download Beans dataset (TFDS error: {e}). Will use placeholder data.")
 
 # 2. CASSAVA DATASET (via TFDS)
 print("Processing Cassava dataset...")
-cassava_ds, cassava_info = tfds.load('cassava', split='train+validation+test', with_info=True)
-cassava_names = cassava_info.features['label'].names
-# Cassava classes: 'cbb', 'cbsd', 'cgm', 'cmd', 'healthy'
-cassava_mapping = {
-    'healthy': 'Cassava_Healthy',
-    'cmd': 'Cassava_Mosaic_Disease',
-    'cbsd': 'Cassava_Brown_Streak_Disease',
-    'cbb': 'Cassava_Bacterial_Blight'
-}
-for i, ex in enumerate(tfds.as_numpy(cassava_ds)):
-    cls_name = cassava_names[ex['label']]
-    target = cassava_mapping.get(cls_name)
-    if target:
-        tf.keras.utils.save_img(os.path.join(DATA_DIR, target, f"cas_{i}.jpg"), ex['image'])
+try:
+    cassava_ds, cassava_info = tfds.load('cassava', split='train+validation+test', with_info=True)
+    cassava_names = cassava_info.features['label'].names
+    # Cassava classes: 'cbb', 'cbsd', 'cgm', 'cmd', 'healthy'
+    cassava_mapping = {
+        'healthy': 'Cassava_Healthy',
+        'cmd': 'Cassava_Mosaic_Disease',
+        'cbsd': 'Cassava_Brown_Streak_Disease',
+        'cbb': 'Cassava_Bacterial_Blight'
+    }
+    for i, ex in enumerate(tfds.as_numpy(cassava_ds)):
+        cls_name = cassava_names[ex['label']]
+        target = cassava_mapping.get(cls_name)
+        if target:
+            tf.keras.utils.save_img(os.path.join(DATA_DIR, target, f"cas_{i}.jpg"), ex['image'])
+except Exception as e:
+    print(f"Failed to download Cassava dataset (TFDS error: {e}). Will use placeholder data.")
 
 # 3. MAIZE (CORN) DATASET (via PlantVillage TFDS)
 print("Processing Maize dataset...")
-pv_ds, pv_info = tfds.load('plant_village', split='train', with_info=True)
-pv_names = pv_info.features['label'].names
-# Map Corn classes to our specific maize diseases
-maize_mapping = {
-    'Corn___healthy': 'Maize_Healthy',
-    'Corn___Northern_Leaf_Blight': 'Maize_Northern_Leaf_Blight',
-    'Corn___Common_rust_': 'Maize_Streak_Virus',     # Mapped for prototype
-    'Corn___Cercospora_leaf_spot Gray_leaf_spot': 'Maize_Lethal_Necrosis' # Mapped for prototype
-}
-for i, ex in enumerate(tfds.as_numpy(pv_ds)):
-    cls_name = pv_names[ex['label']].replace('Corn_(maize)', 'Corn')
-    target = maize_mapping.get(cls_name)
-    if target:
-        tf.keras.utils.save_img(os.path.join(DATA_DIR, target, f"mz_{i}.jpg"), ex['image'])
+try:
+    pv_ds, pv_info = tfds.load('plant_village', split='train', with_info=True)
+    pv_names = pv_info.features['label'].names
+    # Map Corn classes to our specific maize diseases
+    maize_mapping = {
+        'Corn___healthy': 'Maize_Healthy',
+        'Corn___Northern_Leaf_Blight': 'Maize_Northern_Leaf_Blight',
+        'Corn___Common_rust_': 'Maize_Streak_Virus',     # Mapped for prototype
+        'Corn___Cercospora_leaf_spot Gray_leaf_spot': 'Maize_Lethal_Necrosis' # Mapped for prototype
+    }
+    for i, ex in enumerate(tfds.as_numpy(pv_ds)):
+        cls_name = pv_names[ex['label']].replace('Corn_(maize)', 'Corn')
+        target = maize_mapping.get(cls_name)
+        if target:
+            tf.keras.utils.save_img(os.path.join(DATA_DIR, target, f"mz_{i}.jpg"), ex['image'])
+except Exception as e:
+    print(f"Failed to download Maize dataset (TFDS error: {e}). Will use placeholder data.")
 
 # Ensure all classes have at least some dummy images if mapping failed
 print("Ensuring all 12 classes are populated...")
