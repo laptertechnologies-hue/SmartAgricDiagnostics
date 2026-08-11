@@ -69,7 +69,7 @@ class MainActivity : AppCompatActivity() {
         CoroutineScope(Dispatchers.IO).launch {
             val count = AppDatabase.getDatabase(this@MainActivity).historyDao().getCount()
             withContext(Dispatchers.Main) {
-                btn.text = "📋  History ($count)"
+                btn.text = if (count > 0) "📋  Reports ($count)" else "📋  Reports"
             }
         }
     }

@@ -263,7 +263,7 @@
             </LinearLayout>
         </FrameLayout>
 
-        <!-- History Button -->
+        <!-- Bottom Buttons: Reports & About -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -277,21 +277,25 @@
                 android:layout_width="0dp"
                 android:layout_height="54dp"
                 android:layout_weight="1"
-                android:text="📋  Diagnosis History"
+                android:text="📋  Reports"
                 android:textColor="@color/green_primary"
                 android:background="@color/white"
-                android:layout_marginEnd="8dp"
-                android:textSize="14sp"
+                android:layout_marginEnd="6dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 android:elevation="2dp" />
 
             <Button
                 android:id="@+id/btnAbout"
-                android:layout_width="54dp"
+                android:layout_width="0dp"
                 android:layout_height="54dp"
-                android:text="ℹ"
+                android:layout_weight="1"
+                android:text="ℹ️  About"
                 android:textColor="@color/green_primary"
                 android:background="@color/white"
-                android:textSize="18sp"
+                android:layout_marginStart="6dp"
+                android:textSize="15sp"
+                android:textStyle="bold"
                 android:elevation="2dp" />
         </LinearLayout>
 
