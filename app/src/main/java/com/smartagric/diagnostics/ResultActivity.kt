@@ -115,5 +115,30 @@ class ResultActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        findViewById<Button>(R.id.btnShare).setOnClickListener {
+            val cleanName = diseaseName.replace("_", " ")
+            val confidencePct = (confidence * 100).toInt()
+            val shareText = """
+                🌿 Smart AgricDiagnostics Report
+                -----------------------------------
+                Crop: $cropType
+                Diagnosis: $cleanName
+                Confidence: $confidencePct%
+                
+                Treatment Recommendation:
+                $treatment
+                
+                Location: Tororo District, Uganda
+                Powered by Offline TFLite ML Engine
+            """.trimIndent()
+
+            val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                type = "text/plain"
+                putExtra(Intent.EXTRA_SUBJECT, "Crop Disease Report: $cropType - $cleanName")
+                putExtra(Intent.EXTRA_TEXT, shareText)
+            }
+            startActivity(Intent.createChooser(shareIntent, "Share Diagnosis Report"))
+        }
     }
 }

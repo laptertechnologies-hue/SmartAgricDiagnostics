@@ -220,15 +220,34 @@
             android:layout_marginHorizontal="16dp"
             android:layout_marginBottom="28dp">
 
-            <Button
-                android:id="@+id/btnSave"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="54dp"
-                android:text="💾  Save to History"
-                android:textColor="#FFFFFF"
-                android:textSize="15sp"
-                android:backgroundTint="@color/green_primary"
-                android:layout_marginBottom="10dp" />
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginBottom="10dp">
+
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_weight="1"
+                    android:text="💾  Save"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:backgroundTint="@color/green_primary"
+                    android:layout_marginEnd="6dp" />
+
+                <Button
+                    android:id="@+id/btnShare"
+                    android:layout_width="0dp"
+                    android:layout_height="54dp"
+                    android:layout_weight="1"
+                    android:text="📤  Share Report"
+                    android:textColor="#FFFFFF"
+                    android:textSize="15sp"
+                    android:backgroundTint="@color/green_primary"
+                    android:layout_marginStart="6dp" />
+            </LinearLayout>
 
             <Button
                 android:id="@+id/btnScanAgain"
