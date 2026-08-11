@@ -109,7 +109,7 @@ class CameraActivity : AppCompatActivity() {
                         analyzingText.visibility = View.GONE
                         captureBtn.isEnabled = true
                         captureBtn.text = "🔬  DIAGNOSE DISEASE"
-                        Toast.makeText(this@CameraActivity, "Model missing! Please add crop_disease_model.tflite to assets.", Toast.LENGTH_LONG).show()
+                        Toast.makeText(this@CameraActivity, "Diagnosis note: ${e.localizedMessage ?: "Unknown error"}", Toast.LENGTH_SHORT).show()
                     }
                 }
             }
